@@ -36,7 +36,7 @@ public class PaymentController {
                 Order order = razorpayService.createOrder(userId, amount);
                 return ResponseEntity.ok(Map.of(
                                 "orderId", order.get("id"),
-                                "amount(paise)", order.get("amount"),
+                                "amount", order.get("amount"),
                                 "currency", order.get("currency")));
         }
 
