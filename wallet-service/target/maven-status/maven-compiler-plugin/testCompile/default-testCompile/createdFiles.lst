@@ -1,0 +1,10 @@
+com\loyaltyService\wallet_service\service\LedgerServiceTest.class
+com\loyaltyService\wallet_service\service\impl\LedgerServiceImplTest.class
+com\loyaltyService\wallet_service\service\KafkaProducerServiceTest$1.class
+com\loyaltyService\wallet_service\service\WalletServiceTest.class
+com\loyaltyService\wallet_service\saga\WalletSagaEventListenerTest.class
+com\loyaltyService\wallet_service\service\impl\WalletCommandServiceImplTest.class
+com\loyaltyService\wallet_service\service\impl\WalletQueryServiceImplTest.class
+com\loyaltyService\wallet_service\service\KafkaProducerServiceTest.class
+com\loyaltyService\wallet_service\controller\WalletControllerTest.class
+com\loyaltyService\wallet_service\service\RazorpayServiceTest.class

@@ -1,0 +1,20 @@
+-------------------------------------------------------------------------------
+Test set: com.loyaltyService.wallet_service.service.KafkaProducerServiceTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.416 s <<< FAILURE! -- in com.loyaltyService.wallet_service.service.KafkaProducerServiceTest
+com.loyaltyService.wallet_service.service.KafkaProducerServiceTest.sendSerializesPayloadAndDelegatesToTemplate -- Time elapsed: 0.034 s <<< FAILURE!
+Argument(s) are different! Wanted:
+kafkaTemplate.send(
+    "wallet-events",
+    <Capturing argument: String>
+);
+-> at com.loyaltyService.wallet_service.service.KafkaProducerServiceTest.sendSerializesPayloadAndDelegatesToTemplate(KafkaProducerServiceTest.java:38)
+Actual invocations have different arguments at position [1]:
+kafkaTemplate.send(
+    "wallet-events",
+    {"amount" = 100, "userId" = 1}
+);
+-> at com.loyaltyService.wallet_service.service.impl.KafkaProducerServiceImpl.send(KafkaProducerServiceImpl.java:20)
+
+	at com.loyaltyService.wallet_service.service.KafkaProducerServiceTest.sendSerializesPayloadAndDelegatesToTemplate(KafkaProducerServiceTest.java:38)
+

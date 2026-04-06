@@ -5,20 +5,32 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6b20ba60-3c03-4ae0-96b6-42662a1c300e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/loyaltyService/auth_service/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/loyaltyService/auth_service/model/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/resources/application.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/target/classes/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/target/classes/application.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/target/classes/com/loyaltyService/auth_service/model/User$KycStatus.class" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/target/classes/com/loyaltyService/auth_service/model/User$KycStatus.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/target/classes/com/loyaltyService/auth_service/model/User$Role.class" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/target/classes/com/loyaltyService/auth_service/model/User$Role.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/target/classes/com/loyaltyService/auth_service/model/User$UserBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/target/classes/com/loyaltyService/auth_service/model/User$UserBuilder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/target/classes/com/loyaltyService/auth_service/model/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/target/classes/com/loyaltyService/auth_service/model/User.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wallet-service/src/main/java/com/loyaltyService/wallet_service/controller/PaymentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/wallet-service/src/main/java/com/loyaltyService/wallet_service/controller/PaymentController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wallet-service/src/main/java/com/loyaltyService/wallet_service/repository/PaymentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/wallet-service/src/main/java/com/loyaltyService/wallet_service/repository/PaymentRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wallet-service/target/classes/com/loyaltyService/wallet_service/controller/PaymentController.class" beforeDir="false" afterPath="$PROJECT_DIR$/wallet-service/target/classes/com/loyaltyService/wallet_service/controller/PaymentController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wallet-service/target/classes/com/loyaltyService/wallet_service/repository/PaymentRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/wallet-service/target/classes/com/loyaltyService/wallet_service/repository/PaymentRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/loyaltyService/auth_service/config/RedisConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/loyaltyService/auth_service/config/RedisConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/loyaltyService/auth_service/service/impl/AuthServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/loyaltyService/auth_service/service/impl/AuthServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/loyaltyService/auth_service/service/impl/EmailServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/loyaltyService/auth_service/service/impl/EmailServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/loyaltyService/auth_service/service/impl/OtpServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/loyaltyService/auth_service/service/impl/OtpServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/target/classes/com/loyaltyService/auth_service/service/impl/AuthServiceImpl$UpdateProfileRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/target/classes/com/loyaltyService/auth_service/service/impl/AuthServiceImpl$UpdateProfileRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/target/classes/com/loyaltyService/auth_service/service/impl/AuthServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/target/classes/com/loyaltyService/auth_service/service/impl/AuthServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/target/classes/com/loyaltyService/auth_service/service/impl/EmailServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/target/classes/com/loyaltyService/auth_service/service/impl/EmailServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reward-service/src/main/java/com/loyaltyService/reward_service/controller/RewardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/reward-service/src/main/java/com/loyaltyService/reward_service/controller/RewardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reward-service/src/main/java/com/loyaltyService/reward_service/dto/RewardItemRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/reward-service/src/main/java/com/loyaltyService/reward_service/dto/RewardItemRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reward-service/src/main/java/com/loyaltyService/reward_service/entity/RewardItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/reward-service/src/main/java/com/loyaltyService/reward_service/entity/RewardItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reward-service/src/main/java/com/loyaltyService/reward_service/repository/RewardItemRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/reward-service/src/main/java/com/loyaltyService/reward_service/repository/RewardItemRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reward-service/src/main/java/com/loyaltyService/reward_service/repository/RewardRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/reward-service/src/main/java/com/loyaltyService/reward_service/repository/RewardRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reward-service/src/main/java/com/loyaltyService/reward_service/service/impl/RewardCommandServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/reward-service/src/main/java/com/loyaltyService/reward_service/service/impl/RewardCommandServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reward-service/src/main/java/com/loyaltyService/reward_service/service/impl/RewardQueryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/reward-service/src/main/java/com/loyaltyService/reward_service/service/impl/RewardQueryServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reward-service/target/classes/com/loyaltyService/reward_service/controller/RewardController.class" beforeDir="false" afterPath="$PROJECT_DIR$/reward-service/target/classes/com/loyaltyService/reward_service/controller/RewardController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reward-service/target/classes/com/loyaltyService/reward_service/dto/RewardItemRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/reward-service/target/classes/com/loyaltyService/reward_service/dto/RewardItemRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reward-service/target/classes/com/loyaltyService/reward_service/entity/RewardItem$ItemType.class" beforeDir="false" afterPath="$PROJECT_DIR$/reward-service/target/classes/com/loyaltyService/reward_service/entity/RewardItem$ItemType.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reward-service/target/classes/com/loyaltyService/reward_service/entity/RewardItem$RewardItemBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/reward-service/target/classes/com/loyaltyService/reward_service/entity/RewardItem$RewardItemBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reward-service/target/classes/com/loyaltyService/reward_service/entity/RewardItem.class" beforeDir="false" afterPath="$PROJECT_DIR$/reward-service/target/classes/com/loyaltyService/reward_service/entity/RewardItem.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reward-service/target/classes/com/loyaltyService/reward_service/repository/RewardItemRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/reward-service/target/classes/com/loyaltyService/reward_service/repository/RewardItemRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reward-service/target/classes/com/loyaltyService/reward_service/service/impl/RewardCommandServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/reward-service/target/classes/com/loyaltyService/reward_service/service/impl/RewardCommandServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reward-service/target/classes/com/loyaltyService/reward_service/service/impl/RewardQueryServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/reward-service/target/classes/com/loyaltyService/reward_service/service/impl/RewardQueryServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wallet-service/src/main/java/com/loyaltyService/wallet_service/service/impl/WalletCommandServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/wallet-service/src/main/java/com/loyaltyService/wallet_service/service/impl/WalletCommandServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wallet-service/target/classes/com/loyaltyService/wallet_service/service/impl/WalletCommandServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/wallet-service/target/classes/com/loyaltyService/wallet_service/service/impl/WalletCommandServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wallet-service/target/generated-sources/annotations/com/loyaltyService/wallet_service/mapper/WalletMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/wallet-service/target/generated-sources/annotations/com/loyaltyService/wallet_service/mapper/WalletMapperImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,7 +44,7 @@
     </persistenceIdMap>
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="301" />
+    <option name="cachedIndexableFilesCount" value="295" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -95,6 +107,8 @@
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
     &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\anshu\\AppData\\Roaming\\JetBrains\\IntelliJIdea2026.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -106,23 +120,6 @@
         <option value="QuarkusRunConfigurationType" />
         <option value="SpringBootApplicationConfigurationType" />
       </set>
-    </option>
-    <option name="configurationStatuses">
-      <map>
-        <entry key="SpringBootApplicationConfigurationType">
-          <value>
-            <map>
-              <entry key="ApiGatewayApplication" value="STOPPED" />
-              <entry key="AuthServiceApplication" value="STOPPED" />
-              <entry key="EurekaServerApplication" value="STOPPED" />
-              <entry key="NotificationServiceApplication" value="STOPPED" />
-              <entry key="RewardServiceApplication" value="STOPPED" />
-              <entry key="UserServiceApplication" value="STOPPED" />
-              <entry key="WalletServiceApplication" value="STOPPED" />
-            </map>
-          </value>
-        </entry>
-      </map>
     </option>
   </component>
   <component name="RunManager" selected="Spring Boot.ApiGatewayApplication">
@@ -250,6 +247,21 @@
       <workItem from="1775151614492" duration="2973000" />
       <workItem from="1775197214430" duration="980000" />
       <workItem from="1775205026541" duration="4359000" />
+      <workItem from="1775228534615" duration="1355000" />
+      <workItem from="1775240800646" duration="791000" />
+      <workItem from="1775242978198" duration="10000" />
+      <workItem from="1775276623025" duration="1204000" />
+      <workItem from="1775281573139" duration="129000" />
+      <workItem from="1775282290874" duration="2813000" />
+      <workItem from="1775320991681" duration="6882000" />
+      <workItem from="1775328272315" duration="14000" />
+      <workItem from="1775384150848" duration="3651000" />
+      <workItem from="1775395698614" duration="1792000" />
+      <workItem from="1775448415484" duration="8436000" />
+      <workItem from="1775459520335" duration="815000" />
+      <workItem from="1775464845501" duration="1268000" />
+      <workItem from="1775467176496" duration="2135000" />
+      <workItem from="1775499194661" duration="3288000" />
     </task>
     <servers />
   </component>

@@ -21,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -72,7 +73,7 @@ public class RewardQueryServiceImpl implements RewardQueryService {
     @Cacheable(value = "reward-catalog")
     public List<RewardItem> getCatalog() {
         log.debug("Cache miss — loading reward catalog from DB");
-        return itemRepo.findByActiveTrueOrderByPointsRequiredAsc();
+        return itemRepo.findVisibleCatalog(LocalDateTime.now());
     }
 
     @Override

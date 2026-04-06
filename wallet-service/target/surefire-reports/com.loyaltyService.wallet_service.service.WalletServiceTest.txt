@@ -1,0 +1,12 @@
+-------------------------------------------------------------------------------
+Test set: com.loyaltyService.wallet_service.service.WalletServiceTest
+-------------------------------------------------------------------------------
+Tests run: 21, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.306 s <<< FAILURE! -- in com.loyaltyService.wallet_service.service.WalletServiceTest
+com.loyaltyService.wallet_service.service.WalletServiceTest.createWalletThrowsWhenAlreadyExists -- Time elapsed: 0.013 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Expected com.loyaltyService.wallet_service.exception.WalletException to be thrown, but nothing was thrown.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:159)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:74)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3223)
+	at com.loyaltyService.wallet_service.service.WalletServiceTest.createWalletThrowsWhenAlreadyExists(WalletServiceTest.java:79)
+

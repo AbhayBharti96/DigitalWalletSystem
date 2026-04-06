@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,10 +56,17 @@ public class WalletCommandServiceImpl implements WalletCommandService {
     @Override
     @Transactional
     public void createWallet(Long userId) {
-        if (accountRepo.existsByUserId(userId))
-            throw new WalletException("Wallet already exists for this user", HttpStatus.CONFLICT);
-        accountRepo.save(WalletAccount.builder().userId(userId).build());
-        log.info("Wallet created for userId={}", userId);
+        if (accountRepo.existsByUserId(userId)) {
+            log.info("Wallet already exists for userId={} (idempotent create ignored)", userId);
+            return;
+        }
+        try {
+            accountRepo.save(WalletAccount.builder().userId(userId).build());
+            log.info("Wallet created for userId={}", userId);
+        } catch (DataIntegrityViolationException ex) {
+            // Handles concurrent create attempts against unique user_id constraint.
+            log.info("Wallet already exists for userId={} (race won by another request)", userId);
+        }
     }
 
     // ── Topup ─────────────────────────────────────────────────────────────────

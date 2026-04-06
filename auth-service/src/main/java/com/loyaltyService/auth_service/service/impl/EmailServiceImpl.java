@@ -17,7 +17,7 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendOtp(String recipientEmail, String otp) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("shivamkumar1352002@gmail.com");
+        message.setFrom("abhibharti96396@gmail.com");
         message.setTo(recipientEmail);             
         message.setSubject("Your OTP Code");
         message.setText("Your OTP is: " + otp);

@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 @Repository
 public interface RewardRepository extends JpaRepository<RewardAccount, Long> {
-    Optional<RewardAccount> findByUserId(Long userId);
+Optional<RewardAccount> findByUserId(Long userId);
 }

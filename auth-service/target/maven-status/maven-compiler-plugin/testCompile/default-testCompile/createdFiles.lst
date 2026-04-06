@@ -1,0 +1,4 @@
+com\loyaltyService\auth_service\service\AuthServiceTest.class
+com\loyaltyService\auth_service\service\RefreshTokenServiceTest.class
+com\loyaltyService\auth_service\service\EmailServiceTest.class
+com\loyaltyService\auth_service\service\OtpServiceTest.class

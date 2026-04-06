@@ -73,7 +73,6 @@ public class RewardController {
         return ResponseEntity.ok(ApiResponse.ok(
                 "Successfully redeemed " + points + " points. ₹" + points + " credited to your wallet."));
     }
-
 //    // ── Convert points → cash (backward compat) ───────────────────────────────
 //    @PostMapping("/convert-to-cash")
 //    @Operation(summary = "Convert points to wallet cash — alias for /redeem-points")

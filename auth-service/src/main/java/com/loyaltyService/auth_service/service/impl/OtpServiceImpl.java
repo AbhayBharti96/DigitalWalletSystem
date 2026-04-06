@@ -250,13 +250,15 @@ public class OtpServiceImpl implements OtpService {
         String otpKey = buildOtpKey(email, type);
         String attemptsKey = buildAttemptsKey(email, type);
 
-        String storedOtp = (String) redisTemplate.opsForValue().get(otpKey);
+        Object storedOtpValue = redisTemplate.opsForValue().get(otpKey);
+        String storedOtp = storedOtpValue == null ? null : String.valueOf(storedOtpValue);
 
         if (storedOtp == null) {
             throw new AuthException("OTP expired or not found", HttpStatus.GONE);
         }
 
-        Integer attempts = (Integer) redisTemplate.opsForValue().get(attemptsKey);
+        Object attemptsValue = redisTemplate.opsForValue().get(attemptsKey);
+        Long attempts = toLongValue(attemptsValue);
 
         if (attempts != null && attempts >= maxAttempts) {
             redisTemplate.delete(otpKey);
@@ -317,6 +319,21 @@ public class OtpServiceImpl implements OtpService {
 
     private String buildAttemptsKey(String email, OtpStore.OtpType type) {
         return "otp:attempts:" + type + ":" + email;
+    }
+
+    private Long toLongValue(Object value) {
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof Number number) {
+            return number.longValue();
+        }
+        try {
+            return Long.parseLong(String.valueOf(value));
+        } catch (NumberFormatException ex) {
+            log.warn("Ignoring non-numeric Redis value for OTP attempts: {}", value);
+            return null;
+        }
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.loyaltyService.reward_service.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 @Entity @Table(name = "reward_catalog")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class RewardItem {
@@ -14,5 +15,7 @@ public class RewardItem {
     @Column(name = "tier_required", length = 20) private String tierRequired;
     @Column(name = "stock", nullable = false) @Builder.Default private Integer stock = 100;
     @Column(name = "active", nullable = false) @Builder.Default private Boolean active = true;
+    @Column(name = "active_from") private LocalDateTime activeFrom;
+    @Column(name = "active_until") private LocalDateTime activeUntil;
     public enum ItemType { CASHBACK, COUPON, VOUCHER }
 }

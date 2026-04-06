@@ -1,5 +1,4 @@
 package com.loyaltyService.auth_service.service.impl;
-
 import com.loyaltyService.auth_service.client.UserServiceClient;
 import com.loyaltyService.auth_service.dto.AuthDto;
 import com.loyaltyService.auth_service.exception.AuthException;
@@ -13,7 +12,6 @@ import com.loyaltyService.auth_service.service.AuthService;
 import com.loyaltyService.auth_service.service.EmailService;
 import com.loyaltyService.auth_service.service.OtpService;
 import com.loyaltyService.auth_service.service.RefreshTokenService;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -151,9 +149,9 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public AuthDto.AuthResponse verifyLoginOtp(AuthDto.VerifyOtpRequest request) {
-        String email = request.getEmail().toLowerCase(); // ✅ normalize first
+        String email = request.getEmail().toLowerCase(); // normalize first
 
-        otpService.verifyEmailOtp(email, request.getOtp(), OtpStore.OtpType.LOGIN); // ✅ lowercased email
+        otpService.verifyEmailOtp(email, request.getOtp(), OtpStore.OtpType.LOGIN); //  lowercased email
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AuthException("User not found", HttpStatus.NOT_FOUND));

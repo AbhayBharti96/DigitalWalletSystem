@@ -105,13 +105,16 @@ public class RewardCommandServiceImpl implements RewardCommandService {
     @Transactional
     @CacheEvict(value = "reward-catalog", allEntries = true)
     public RewardItem addCatalogItem(RewardItemRequest req) {
+        validateActiveWindow(req.getActiveFrom(), req.getActiveUntil());
         return itemRepo.save(RewardItem.builder()
                 .name(req.getName()).description(req.getDescription())
                 .pointsRequired(req.getPointsRequired())
                 .type(RewardItem.ItemType.valueOf(req.getType()))
-                .active(true).stock(req.getStock())
+                .active(req.getActive() == null ? true : req.getActive()).stock(req.getStock())
                 .tierRequired(req.getTierRequired())
                 .cashbackAmount(req.getCashbackAmount())
+                .activeFrom(req.getActiveFrom())
+                .activeUntil(req.getActiveUntil())
                 .build());
     }
 
@@ -119,6 +122,7 @@ public class RewardCommandServiceImpl implements RewardCommandService {
     @Transactional
     @CacheEvict(value = "reward-catalog", allEntries = true)
     public RewardItem updateCatalogItem(Long rewardId, RewardItemRequest req) {
+        validateActiveWindow(req.getActiveFrom(), req.getActiveUntil());
         RewardItem item = itemRepo.findById(rewardId)
                 .orElseThrow(() -> new RewardException("Reward item not found", HttpStatus.NOT_FOUND));
 
@@ -129,6 +133,11 @@ public class RewardCommandServiceImpl implements RewardCommandService {
         item.setStock(req.getStock());
         item.setTierRequired(req.getTierRequired());
         item.setCashbackAmount(req.getCashbackAmount());
+        if (req.getActive() != null) {
+            item.setActive(req.getActive());
+        }
+        item.setActiveFrom(req.getActiveFrom());
+        item.setActiveUntil(req.getActiveUntil());
 
         return itemRepo.save(item);
     }
@@ -190,7 +199,7 @@ public class RewardCommandServiceImpl implements RewardCommandService {
                 "userId", userId,
                 "points", points,
                 "cash", cashAmount,
-                "balance", rewardRepo.getReferenceById(userId).getPoints()));
+                "balance", acc.getPoints()));
         log.info("Points redeemed: userId={}, points={}, cash=₹{}", userId, points, cashAmount);
     }
 
@@ -217,6 +226,8 @@ public class RewardCommandServiceImpl implements RewardCommandService {
         }
         if (!Boolean.TRUE.equals(item.getActive()))
             throw new RewardException("This reward is no longer available");
+        if (!isWithinActiveWindow(item))
+            throw new RewardException("This reward is outside its active period");
         if (item.getStock() <= 0)
             throw new RewardException("This reward is out of stock");
         if (item.getTierRequired() != null && !isTierEligible(acc.getTier(), item.getTierRequired()))
@@ -326,6 +337,23 @@ public class RewardCommandServiceImpl implements RewardCommandService {
         }
         if (acc.getFirstTopupDone() == null) {
             acc.setFirstTopupDone(false);
+        }
+    }
+
+    private boolean isWithinActiveWindow(RewardItem item) {
+        LocalDateTime now = LocalDateTime.now();
+        if (item.getActiveFrom() != null && now.isBefore(item.getActiveFrom())) {
+            return false;
+        }
+        if (item.getActiveUntil() != null && now.isAfter(item.getActiveUntil())) {
+            return false;
+        }
+        return true;
+    }
+
+    private void validateActiveWindow(LocalDateTime activeFrom, LocalDateTime activeUntil) {
+        if (activeFrom != null && activeUntil != null && activeUntil.isBefore(activeFrom)) {
+            throw new RewardException("activeUntil must be after activeFrom");
         }
     }
 }
