@@ -1,70 +1,52 @@
-# Digital Wallet System
+# Digital Wallet System Documentation
 
-## Project Overview
-This Digital Wallet System is a microservices-based application built using Java to facilitate secure and efficient digital transactions. It allows users to perform various financial operations, manage their accounts, and conduct transactions seamlessly.
+## Overview
+The Digital Wallet System is designed to enhance user transactions and provide seamless payment experiences through innovative technologies.
 
-## Architecture
-The architecture of the Digital Wallet System is based on a microservices approach. Each service is independently deployable and can be developed, maintained, and scaled independently. Here’s a brief overview of the main components:
+## System Architecture
+![Architecture Diagram](link-to-architecture-image)
+The system architecture consists of multiple microservices, ensuring scalability and maintainability.
 
-- **User Service**: Manages user accounts and authentication.
-- **Transaction Service**: Handles all financial transactions and records.
-- **Wallet Service**: Manages wallet creation, balance checks, and fund transfers.
-- **Notification Service**: Sends notifications for transaction updates and account activity.
+## Service Communication Flow
+- **User Service**: Manages user information and authentication.
+- **Transaction Service**: Handles financial transactions and records.
+- **Notification Service**: Sends notifications to users regarding transactions.
+- **Payment Gateway Service**: Interacts with external payment gateways for processing payments.
 
-The services communicate with each other using REST APIs and Kafka for message brokering, ensuring loose coupling and scalability.
+## Monitoring Setup
+### Zipkin
+To monitor the microservices, Zipkin is used to trace requests across services. Follow these steps to set it up:
+1. Include the Zipkin library in your microservices.
+2. Configure the endpoints to report traces to your Zipkin server.
 
-## Features
-- **User Authentication**: Secure login and registration process.
-- **Fund Transfers**: Easy transfer of funds between users.
-- **Transaction History**: View transaction history for better tracking.
-- **Balance Inquiry**: Check wallet balance at any time.
-- **Notifications**: Get real-time notifications for transactions and activities.
+### Grafana
+For visualization of metrics:
+1. Use Prometheus as a metrics gatherer.
+2. Set up Grafana dashboards to visualize service performance metrics and monitoring data.
 
-## Installation
-### Prerequisites
-- Java 11 or higher
-- Maven 3.6 or higher
-- MySQL or PostgreSQL (for database)
+## Security Implementation
+- Implement OAuth 2.0 for handling authentication.
+- Use SSL/TLS for data encryption.
+- Regular security audits to ensure compliance with best practices.
 
-### Steps to Install
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/AbhayBharti96/DigitalWalletSystem.git
-   ```
-2. Navigate to the project directory:
-   ```bash
-   cd DigitalWalletSystem
-   ```
-3. Install dependencies using Maven:
-   ```bash
-   mvn clean install
-   ```
-4. Set up the database:
-   - Create a database named `digital_wallet`
-   - Import the schema from `schema.sql` located in the `src/main/resources` directory.
+## Important Things to Check
+- Ensure that all microservices are running properly.
+- Monitor the logs for any irregularities.
+- Verify that the database connections are secure and optimized.
 
-5. Configure application properties:
-   - Update the `application.properties` file with your database credentials and other settings.
+## Microservices Communication
+### REST APIs
+- Each microservice exposes REST APIs for communication with other microservices.
+- Ensure that all API endpoints are documented and secured using proper authentication mechanisms.
 
-6. Run the application:
-   ```bash
-   mvn spring-boot:run
-   ```
+### Message Brokers
+- For asynchronous communication, use message brokers like Kafka or RabbitMQ to handle events and messages.
+- This ensures loose coupling between services and improves scalability.
 
-## Usage
-- After starting the application, access the user service at:
-  - **User Service**: `http://localhost:8080/users`
-  - **Transaction Service**: `http://localhost:8081/transactions`
-  - **Wallet Service**: `http://localhost:8082/wallet`
-  - **Notification Service**: `http://localhost:8083/notifications`
+## Monitoring
+Regularly check the metrics collected in Grafana to ensure:
+- Service health and uptime.
+- Performance bottlenecks.
+- Latency issues in service communication.
 
-- You can test the endpoints using tools like Postman or Curl for API operations.
-
-## Contributing
-Contributions are welcome! Please fork the repository and create a pull request with your changes.
-
-## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-Special thanks to contributors and libraries that made this project possible.
+By following this documentation, you can ensure a robust and efficient Digital Wallet System.
