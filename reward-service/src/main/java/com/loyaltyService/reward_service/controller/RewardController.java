@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -73,16 +72,6 @@ public class RewardController {
         return ResponseEntity.ok(ApiResponse.ok(
                 "Successfully redeemed " + points + " points. ₹" + points + " credited to your wallet."));
     }
-//    // ── Convert points → cash (backward compat) ───────────────────────────────
-//    @PostMapping("/convert-to-cash")
-//    @Operation(summary = "Convert points to wallet cash — alias for /redeem-points")
-//    public ResponseEntity<ApiResponse<Void>> convertToCash(
-//            @RequestHeader("X-User-Id") Long userId,
-//            @RequestParam @Min(value = 1, message = "Points must be at least 1") Integer points) {
-//        rewardCommandService.convertPointsToCash(userId, points);
-//        return ResponseEntity.ok(ApiResponse.ok(
-//                "Points converted successfully. ₹" + points + " credited to wallet."));
-//    }
 
     // ── Transaction history ───────────────────────────────────────────────────
     @GetMapping("/transactions")

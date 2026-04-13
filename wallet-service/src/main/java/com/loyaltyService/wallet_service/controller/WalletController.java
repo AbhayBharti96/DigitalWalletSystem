@@ -8,7 +8,6 @@ import com.loyaltyService.wallet_service.service.WalletCommandService;
 import com.loyaltyService.wallet_service.service.WalletQueryService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -50,15 +49,6 @@ public class WalletController {
         return ResponseEntity.ok(ApiResponse.ok("Balance fetched", walletQueryService.getBalance(userId)));
     }
 
-    // // ── Topup ─────────────────────────────────────────────────────────────────
-    // @PostMapping("/internal/topup")
-    // @Operation(summary = "Top up wallet")
-    // public ResponseEntity<ApiResponse<Void>> topup(
-    // @RequestHeader("X-User-Id") Long userId,
-    // @Valid @RequestBody TopupRequest req) {
-    // walletService.topup(userId, req.getAmount(), req.getIdempotencyKey());
-    // return ResponseEntity.ok(ApiResponse.ok("Top-up successful"));
-    // }
 
     // ── Transfer ──────────────────────────────────────────────────────────────
     @PostMapping("/transfer")
@@ -145,11 +135,6 @@ public class WalletController {
         return ResponseEntity.ok(ApiResponse.ok("Wallet created successfully"));
     }
 
-    // ── Internal — credit (cashback or points redemption) ────────────────────
-    // FIX: Added optional `source` param ("REDEEM" | "CASHBACK").
-    // Defaults to "CASHBACK" for backward compatibility.
-    // This lets the transaction history distinguish point redemptions from topup
-    // cashback.
     @PostMapping("/internal/credit")
     @Operation(summary = "Internal cashback/redeem credit (service-to-service only)")
     public ResponseEntity<ApiResponse<Void>> internalCredit(
