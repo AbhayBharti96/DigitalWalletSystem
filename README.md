@@ -1,52 +1,75 @@
 # Digital Wallet System Documentation
 
-## Overview
-The Digital Wallet System is designed to enhance user transactions and provide seamless payment experiences through innovative technologies.
+## Introduction
+This document provides comprehensive documentation for the Digital Wallet System, detailing the architecture, communication, security, and operational practices.
 
 ## System Architecture
-![Architecture Diagram](link-to-architecture-image)
-The system architecture consists of multiple microservices, ensuring scalability and maintainability.
+```
+                            +-------------------+
+                            |    User Device     |
+                            +-------------------+
+                                      |
+                                      V
+                            +-------------------+
+                            |   API Gateway      |
+                            +-------------------+
+                                      |
+                    +-------------------+---------------------+
+                    |                                         |
+              +-----------------+                       +-----------------+
+              |  Service A      |                       |  Service B      |
+              +-----------------+                       +-----------------+
+                    |                                         |
+                    +-------------------+---------------------+
+                                      |
+                                      V
+                            +-------------------+
+                            |   Database        |
+                            +-------------------+
+                            
+```  
 
-## Service Communication Flow
-- **User Service**: Manages user information and authentication.
-- **Transaction Service**: Handles financial transactions and records.
-- **Notification Service**: Sends notifications to users regarding transactions.
-- **Payment Gateway Service**: Interacts with external payment gateways for processing payments.
+## Microservices Communication Flow
+```
+                     +-------------------+
+                     |   Service A      |
+                     +-------------------+
+                            |
+                   Kafka Message Flow
+                            |
+                     +-------------------+
+                     |   Service B      |
+                     +-------------------+
+```
+
+## Service Interaction Diagrams
+- **Service A** interacts with **Service B** using asynchronous messaging through Kafka.
 
 ## Monitoring Setup
 ### Zipkin
-To monitor the microservices, Zipkin is used to trace requests across services. Follow these steps to set it up:
-1. Include the Zipkin library in your microservices.
-2. Configure the endpoints to report traces to your Zipkin server.
+- Setup Zipkin for distributed tracing.
 
 ### Grafana
-For visualization of metrics:
-1. Use Prometheus as a metrics gatherer.
-2. Set up Grafana dashboards to visualize service performance metrics and monitoring data.
+- Use Grafana for monitoring metrics.
 
-## Security Implementation
-- Implement OAuth 2.0 for handling authentication.
-- Use SSL/TLS for data encryption.
-- Regular security audits to ensure compliance with best practices.
+## Security Implementation Details
+### JWT Authentication
+- Users authenticate using JWT tokens.
 
-## Important Things to Check
-- Ensure that all microservices are running properly.
-- Monitor the logs for any irregularities.
-- Verify that the database connections are secure and optimized.
+### SSL/TLS Encryption
+- All communications are encrypted using SSL/TLS.
 
-## Microservices Communication
-### REST APIs
-- Each microservice exposes REST APIs for communication with other microservices.
-- Ensure that all API endpoints are documented and secured using proper authentication mechanisms.
+### API Communication Patterns
+- Use REST for synchronous API calls and Kafka for asynchronous messaging.
 
-### Message Brokers
-- For asynchronous communication, use message brokers like Kafka or RabbitMQ to handle events and messages.
-- This ensures loose coupling between services and improves scalability.
+### Kafka Message Flow
+- Messages are sent to topics and consumed by appropriate services.
 
-## Monitoring
-Regularly check the metrics collected in Grafana to ensure:
-- Service health and uptime.
-- Performance bottlenecks.
-- Latency issues in service communication.
+### Database Security
+- Implement best practices for database encryption and access control.
 
-By following this documentation, you can ensure a robust and efficient Digital Wallet System.
+## Operational Best Practices
+- Regularly review security protocols, monitor system performance, and ensure compliance with security standards.
+
+## Important Health Checks
+- Monitor service uptime, response times, and error rates.
