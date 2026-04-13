@@ -96,39 +96,39 @@ public class AdminUserServiceImpl implements AdminUserService {
         } else {
             page = userRepo.findAll(pageable);
         }
-        return page.map(adminUserMapper::toDto);
+        return page.map(this::toAdminUserResponse);
     }
 
     @Override
     public AdminUserResponse getUserById(Long userId) {
         User user = findOrThrow(userId);
-        return adminUserMapper.toDto(user);
+        return toAdminUserResponse(user);
     }
 
     @Override
     public Page<AdminUserResponse> searchUsers(String keyword, Pageable pageable) {
-        return userRepo.searchByKeyword(keyword, pageable).map(adminUserMapper::toDto);
+        return userRepo.searchByKeyword(keyword, pageable).map(this::toAdminUserResponse);
     }
 
     @Override
     public AdminUserResponse findByEmail(String email) {
         User user = userRepo.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("No user with email: " + email));
-        return adminUserMapper.toDto(user);
+        return toAdminUserResponse(user);
     }
 
     @Override
     public AdminUserResponse findByPhone(String phone) {
         User user = userRepo.findByPhone(phone)
                 .orElseThrow(() -> new ResourceNotFoundException("No user with phone: " + phone));
-        return adminUserMapper.toDto(user);
+        return toAdminUserResponse(user);
     }
 
     @Override
     public Page<AdminUserResponse> findByDateRange(LocalDate from, LocalDate to, Pageable pageable) {
         Instant fromInstant = from.atStartOfDay(ZoneOffset.UTC).toInstant();
         Instant toInstant   = to.plusDays(1).atStartOfDay(ZoneOffset.UTC).toInstant();
-        return userRepo.findByCreatedAtBetween(fromInstant, toInstant, pageable).map(adminUserMapper::toDto);
+        return userRepo.findByCreatedAtBetween(fromInstant, toInstant, pageable).map(this::toAdminUserResponse);
     }
 
     @Override
@@ -147,7 +147,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
         // Now pass the enum to the repository
         return userRepo.findByLatestKycStatus(status, pageable)
-                .map(adminUserMapper::toDto);
+                .map(this::toAdminUserResponse);
     }
 
     @Override
@@ -163,7 +163,7 @@ public class AdminUserServiceImpl implements AdminUserService {
                 new AuthServiceClient.StatusUpdateRequest(userId, newStatus.name())
         );
 
-        return adminUserMapper.toDto(user);
+        return toAdminUserResponse(user);
     }
 
     @Override
@@ -172,11 +172,21 @@ public class AdminUserServiceImpl implements AdminUserService {
         User user = findOrThrow(userId);
         user.setRole(newRole);
         userRepo.save(user);
-        return adminUserMapper.toDto(user);
+        authServiceClient.updateRole(new AuthServiceClient.RoleUpdateRequest(userId, newRole.name()));
+        return toAdminUserResponse(user);
     }
 
     private User findOrThrow(Long id) {
         return userRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + id));
+    }
+
+    private AdminUserResponse toAdminUserResponse(User user) {
+        AdminUserResponse response = adminUserMapper.toDto(user);
+        String latestKycStatus = kycRepo.findFirstByUserIdOrderBySubmittedAtDesc(user.getId())
+                .map(kyc -> kyc.getStatus().name())
+                .orElse(NOT_SUBMITTED);
+        response.setKycStatus(latestKycStatus);
+        return response;
     }
 }

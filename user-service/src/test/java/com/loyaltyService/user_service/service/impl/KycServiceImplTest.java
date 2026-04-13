@@ -1,5 +1,6 @@
 package com.loyaltyService.user_service.service.impl;
 
+import com.loyaltyService.user_service.client.AuthServiceClient;
 import com.loyaltyService.user_service.client.WalletServiceClient;
 import com.loyaltyService.user_service.dto.KycStatusResponse;
 import com.loyaltyService.user_service.entity.AuditLog;
@@ -11,6 +12,7 @@ import com.loyaltyService.user_service.mapper.KycMapper;
 import com.loyaltyService.user_service.repository.AuditLogRepository;
 import com.loyaltyService.user_service.repository.KycRepository;
 import com.loyaltyService.user_service.repository.UserRepository;
+import com.loyaltyService.user_service.service.CloudinaryService;
 import com.loyaltyService.user_service.service.KafkaProducerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,11 +39,15 @@ class KycServiceImplTest {
     @Mock
     private AuditLogRepository auditRepo;
     @Mock
+    private AuthServiceClient authServiceClient;
+    @Mock
     private WalletServiceClient walletServiceClient;
     @Mock
     private KafkaProducerService kafkaProducer;
     @Mock
     private KycMapper kycMapper;
+    @Mock
+    private CloudinaryService cloudinaryService;
 
     @InjectMocks
     private KycServiceImpl kycService;
@@ -73,6 +79,8 @@ class KycServiceImplTest {
         assertNotNull(res);
         assertEquals("PENDING", res.getStatus());
         verify(auditRepo, times(1)).save(any(AuditLog.class));
+        verify(authServiceClient).updateKycStatus(
+                new AuthServiceClient.KycStatusUpdateRequest(1L, "PENDING"));
     }
 
     @Test
@@ -99,6 +107,31 @@ class KycServiceImplTest {
     @Test
     void testGetStatus_NotFound() {
         when(kycRepo.findFirstByUserIdOrderBySubmittedAtDesc(1L)).thenReturn(Optional.empty());
-        assertThrows(ResourceNotFoundException.class, () -> kycService.getStatus(1L));
+        KycStatusResponse response = kycService.getStatus(1L);
+        assertEquals("NOT_SUBMITTED", response.getStatus());
+    }
+
+    @Test
+    void approveSyncsApprovedStatusToAuthService() {
+        when(kycRepo.findById(100L)).thenReturn(Optional.of(testKyc));
+        when(kycRepo.save(any(KycDetail.class))).thenReturn(testKyc);
+        when(kycMapper.toResponse(any())).thenReturn(new KycStatusResponse());
+
+        kycService.approve(100L, "admin@example.com");
+
+        verify(authServiceClient).updateKycStatus(
+                new AuthServiceClient.KycStatusUpdateRequest(1L, "APPROVED"));
+    }
+
+    @Test
+    void rejectSyncsRejectedStatusToAuthService() {
+        when(kycRepo.findById(100L)).thenReturn(Optional.of(testKyc));
+        when(kycRepo.save(any(KycDetail.class))).thenReturn(testKyc);
+        when(kycMapper.toResponse(any())).thenReturn(new KycStatusResponse());
+
+        kycService.reject(100L, "invalid document", "admin@example.com");
+
+        verify(authServiceClient).updateKycStatus(
+                new AuthServiceClient.KycStatusUpdateRequest(1L, "REJECTED"));
     }
 }

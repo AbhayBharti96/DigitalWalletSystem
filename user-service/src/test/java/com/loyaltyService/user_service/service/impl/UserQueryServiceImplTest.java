@@ -1,5 +1,6 @@
 package com.loyaltyService.user_service.service.impl;
 
+import com.loyaltyService.user_service.dto.TransferRecipientResponse;
 import com.loyaltyService.user_service.dto.UserProfileResponse;
 import com.loyaltyService.user_service.entity.KycDetail;
 import com.loyaltyService.user_service.entity.User;
@@ -15,7 +16,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -99,5 +103,45 @@ class UserQueryServiceImplTest {
         UserProfileResponse res = userQueryService.getUserProfile(1L);
         
         assertNotNull(res);
+    }
+
+    @Test
+    void searchTransferRecipientsFindsByNameAndExcludesRequester() {
+        User otherUser = User.builder()
+                .id(2L)
+                .name("Test Receiver")
+                .phone("9999999998")
+                .status(User.UserStatus.ACTIVE)
+                .build();
+        when(userRepo.searchByKeyword("test", PageRequest.of(0, 10)))
+                .thenReturn(new PageImpl<>(List.of(testUser, otherUser), PageRequest.of(0, 10), 2));
+        when(kycRepo.findFirstByUserIdOrderBySubmittedAtDesc(2L))
+                .thenReturn(Optional.of(KycDetail.builder().status(KycDetail.KycStatus.APPROVED).build()));
+
+        List<TransferRecipientResponse> recipients = userQueryService.searchTransferRecipients(1L, "test", 10);
+
+        assertEquals(1, recipients.size());
+        assertEquals(2L, recipients.getFirst().getId());
+        assertEquals("APPROVED", recipients.getFirst().getKycStatus());
+    }
+
+    @Test
+    void searchTransferRecipientsFindsByExactId() {
+        User otherUser = User.builder()
+                .id(22L)
+                .name("Receiver")
+                .phone("9999999997")
+                .status(User.UserStatus.ACTIVE)
+                .build();
+        when(userRepo.findById(22L)).thenReturn(Optional.of(otherUser));
+        when(userRepo.searchByKeyword("22", PageRequest.of(0, 10)))
+                .thenReturn(new PageImpl<>(List.of(), PageRequest.of(0, 10), 0));
+        when(kycRepo.findFirstByUserIdOrderBySubmittedAtDesc(22L)).thenReturn(Optional.empty());
+
+        List<TransferRecipientResponse> recipients = userQueryService.searchTransferRecipients(1L, "22", 10);
+
+        assertEquals(1, recipients.size());
+        assertEquals(22L, recipients.getFirst().getId());
+        assertEquals("NOT_SUBMITTED", recipients.getFirst().getKycStatus());
     }
 }

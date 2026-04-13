@@ -1,5 +1,6 @@
 package com.loyaltyService.user_service.service.impl;
 
+import com.loyaltyService.user_service.client.AuthServiceClient;
 import com.loyaltyService.user_service.dto.AdminDashboardResponse;
 import com.loyaltyService.user_service.dto.AdminUserResponse;
 import com.loyaltyService.user_service.entity.KycDetail;
@@ -46,6 +47,9 @@ class AdminUserServiceImplTest {
     @Mock
     private AdminUserMapper adminUserMapper;
 
+    @Mock
+    private AuthServiceClient authServiceClient;
+
     @InjectMocks
     private AdminUserServiceImpl adminUserService;
 
@@ -89,7 +93,7 @@ class AdminUserServiceImplTest {
         var page = adminUserService.listUsers(PageRequest.of(0, 10), User.UserStatus.ACTIVE, User.Role.USER);
 
         assertEquals(1, page.getTotalElements());
-        assertEquals("NOT_SUBMITTED", page.getContent().getFirst().getKycStatus());
+        assertEquals("APPROVED", page.getContent().getFirst().getKycStatus());
     }
 
     @Test
@@ -217,13 +221,15 @@ class AdminUserServiceImplTest {
     @Test
     void findByKycStatusUppercasesStatusBeforeDelegating() {
         User user = user(17L);
+        KycDetail kyc = latestKyc(user, APPROVED);
         when(userRepo.findByLatestKycStatus(eq(APPROVED), eq(PageRequest.of(0, 10))))
                 .thenReturn(new PageImpl<>(List.of(user), PageRequest.of(0, 10), 1));
-        when(kycRepo.findFirstByUserIdOrderBySubmittedAtDesc(17L)).thenReturn(Optional.empty());
+        when(kycRepo.findFirstByUserIdOrderBySubmittedAtDesc(17L)).thenReturn(Optional.of(kyc));
 
         var page = adminUserService.findByKycStatus("approved", PageRequest.of(0, 10));
 
         assertEquals(1, page.getTotalElements());
+        assertEquals("APPROVED", page.getContent().getFirst().getKycStatus());
         verify(userRepo).findByLatestKycStatus(APPROVED, PageRequest.of(0, 10));
     }
 
@@ -237,6 +243,7 @@ class AdminUserServiceImplTest {
 
         assertEquals("BLOCKED", response.getStatus());
         verify(userRepo).save(user);
+        verify(authServiceClient).updateStatus(new AuthServiceClient.StatusUpdateRequest(4L, "BLOCKED"));
     }
 
     @Test
@@ -257,6 +264,7 @@ class AdminUserServiceImplTest {
 
         assertEquals("ADMIN", response.getRole());
         verify(userRepo).save(user);
+        verify(authServiceClient).updateRole(new AuthServiceClient.RoleUpdateRequest(5L, "ADMIN"));
     }
 
     @Test

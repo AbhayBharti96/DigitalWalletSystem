@@ -95,7 +95,21 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/internal/role")
+    public ResponseEntity<Void> updateRole(@RequestBody RoleUpdateRequest req) {
+        authService.updateRole(req.userId(), req.role());
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/internal/kyc-status")
+    public ResponseEntity<Void> updateKycStatus(@RequestBody KycStatusUpdateRequest req) {
+        authService.updateKycStatus(req.userId(), req.kycStatus());
+        return ResponseEntity.ok().build();
+    }
+
     record StatusUpdateRequest(Long userId, String status) {}
+    record RoleUpdateRequest(Long userId, String role) {}
+    record KycStatusUpdateRequest(Long userId, String kycStatus) {}
 
     record UpdateProfileRequest(Long userId, String name, String phone) {}
 }

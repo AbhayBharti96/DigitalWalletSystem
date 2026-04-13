@@ -1,17 +1,17 @@
 package com.loyaltyService.wallet_service.controller;
 
+import com.loyaltyService.wallet_service.dto.PaymentFailureRequest;
 import com.loyaltyService.wallet_service.dto.PaymentVerifyRequest;
-import com.loyaltyService.wallet_service.entity.Payment;
-import com.loyaltyService.wallet_service.repository.PaymentRepository;
-import com.loyaltyService.wallet_service.service.WalletCommandService;
-import com.loyaltyService.wallet_service.service.WalletQueryService;
 import com.loyaltyService.wallet_service.service.RazorpayService;
 import com.razorpay.Order;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import java.security.MessageDigest;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -21,35 +21,43 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PaymentController {
 
-        private final PaymentRepository paymentRepo;
-        private final RazorpayService razorpayService;
+    private final RazorpayService razorpayService;
 
+    @PostMapping("/create-order")
+    public ResponseEntity<?> createOrder(
+            @RequestHeader("X-User-Id") Long userId,
+            @RequestParam BigDecimal amount) throws Exception {
 
-        @Value("${razorpay.secret}")
-        private String secret;
+        Order order = razorpayService.createOrder(userId, amount);
+        return ResponseEntity.ok(Map.of(
+                "orderId", order.get("id"),
+                "amount", order.get("amount"),
+                "currency", order.get("currency")));
+    }
 
-        @PostMapping("/create-order")
-        public ResponseEntity<?> createOrder(
-                        @RequestHeader("X-User-Id") Long userId,
-                        @RequestParam BigDecimal amount) throws Exception {
+    @PostMapping("/verify")
+    public ResponseEntity<?> verify(
+            @RequestHeader("X-User-Id") Long userId,
+            @RequestBody PaymentVerifyRequest request) {
 
-                Order order = razorpayService.createOrder(userId, amount);
-                return ResponseEntity.ok(Map.of(
-                                "orderId", order.get("id"),
-                                "amount", order.get("amount"),
-                                "currency", order.get("currency")));
+        try {
+            razorpayService.verifyPayment(userId, request);
+            return ResponseEntity.ok("Payment verified & wallet credited");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
 
-        @PostMapping("/verify")
-        public ResponseEntity<?> verify(
-                @RequestHeader("X-User-Id") Long userId,
-                @RequestBody PaymentVerifyRequest request) {
+    @PostMapping("/fail")
+    public ResponseEntity<?> markFailed(
+            @RequestHeader("X-User-Id") Long userId,
+            @RequestBody PaymentFailureRequest request) {
 
-                try {
-                        razorpayService.verifyPayment(userId, request);
-                        return ResponseEntity.ok("Payment verified & wallet credited");
-                } catch (Exception e) {
-                        return ResponseEntity.badRequest().body(e.getMessage());
-                }
+        try {
+            razorpayService.markPaymentFailed(userId, request);
+            return ResponseEntity.ok("Payment marked as failed");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
 }

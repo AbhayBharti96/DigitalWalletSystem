@@ -15,16 +15,14 @@ import com.loyaltyService.auth_service.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Map;
+import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
@@ -258,6 +256,38 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
 
         log.info("User status updated from user-service: userId={}, status={}", userId, status);
+    }
+
+    @Override
+    @Transactional
+    public void updateRole(Long userId, String role) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AuthException("User not found", HttpStatus.NOT_FOUND));
+
+        try {
+            user.setRole(User.Role.valueOf(role.trim().toUpperCase(Locale.ROOT)));
+        } catch (IllegalArgumentException exception) {
+            throw new AuthException("Invalid role: " + role, HttpStatus.BAD_REQUEST);
+        }
+
+        userRepository.save(user);
+        log.info("User role updated from user-service: userId={}, role={}", userId, user.getRole());
+    }
+
+    @Override
+    @Transactional
+    public void updateKycStatus(Long userId, String kycStatus) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AuthException("User not found", HttpStatus.NOT_FOUND));
+
+        try {
+            user.setKycStatus(User.KycStatus.valueOf(kycStatus.trim().toUpperCase(Locale.ROOT)));
+        } catch (IllegalArgumentException exception) {
+            throw new AuthException("Invalid kyc status: " + kycStatus, HttpStatus.BAD_REQUEST);
+        }
+
+        userRepository.save(user);
+        log.info("User KYC status updated from user-service: userId={}, kycStatus={}", userId, user.getKycStatus());
     }
 
 

@@ -1,6 +1,7 @@
 package com.loyaltyService.user_service.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.loyaltyService.user_service.dto.TransferRecipientResponse;
 import com.loyaltyService.user_service.dto.UpdateUserRequest;
 import com.loyaltyService.user_service.dto.UserProfileResponse;
 import com.loyaltyService.user_service.entity.User;
@@ -15,6 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -74,6 +77,28 @@ class UserControllerTest {
                 .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.name").value("Updated Name"));
+    }
+
+    @Test
+    void testSearchRecipients() throws Exception {
+        TransferRecipientResponse recipient = TransferRecipientResponse.builder()
+                .id(2L)
+                .name("Recipient User")
+                .phone("9999999999")
+                .kycStatus("APPROVED")
+                .build();
+
+        when(userQueryService.searchTransferRecipients(1L, "rec", 5))
+                .thenReturn(List.of(recipient));
+
+        mockMvc.perform(get("/api/users/search/recipients")
+                .header("X-User-Id", "1")
+                .param("q", "rec")
+                .param("limit", "5"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].id").value(2))
+                .andExpect(jsonPath("$.data[0].name").value("Recipient User"))
+                .andExpect(jsonPath("$.data[0].kycStatus").value("APPROVED"));
     }
 
     @Test

@@ -74,11 +74,20 @@ public class WalletCommandServiceImpl implements WalletCommandService {
     @Transactional
     @CacheEvict(value = "wallet-balance", key = "#userId")
     public void topup(Long userId, BigDecimal amount, String idempotencyKey) {
+        Transaction existingPendingTopup = null;
         if (idempotencyKey != null) {
             Optional<Transaction> existing = txnRepo.findByIdempotencyKey(idempotencyKey);
             if (existing.isPresent()) {
-                log.info("Duplicate topup ignored: idempotencyKey={}", idempotencyKey);
-                return;
+                Transaction txn = existing.get();
+                if (txn.getStatus() == Transaction.TxnStatus.SUCCESS) {
+                    log.info("Duplicate topup ignored: idempotencyKey={}", idempotencyKey);
+                    return;
+                }
+                if (txn.getStatus() == Transaction.TxnStatus.PENDING && txn.getType() == Transaction.TxnType.TOPUP) {
+                    existingPendingTopup = txn;
+                } else {
+                    throw new WalletException("Top-up cannot be processed in status: " + txn.getStatus());
+                }
             }
         }
         WalletAccount acc = findActiveWallet(userId);
@@ -90,14 +99,22 @@ public class WalletCommandServiceImpl implements WalletCommandService {
         if (todayTotal.add(amount).compareTo(dailyTopupLimit) > 0)
             throw new WalletException("Daily top-up limit of ₹" + dailyTopupLimit + " exceeded");
 
-        String ref = "TOPUP_" + UUID.randomUUID();
+        String ref = existingPendingTopup != null ? existingPendingTopup.getReferenceId() : "TOPUP_" + UUID.randomUUID();
         ledgerService.record(userId, amount, LedgerEntry.EntryType.CREDIT, ref, "Wallet top-up");
         acc.credit(amount);
         accountRepo.save(acc);
-        txnRepo.save(Transaction.builder()
-                .receiverId(userId).amount(amount)
-                .status(Transaction.TxnStatus.SUCCESS).type(Transaction.TxnType.TOPUP)
-                .referenceId(ref).idempotencyKey(idempotencyKey).build());
+        if (existingPendingTopup != null) {
+            existingPendingTopup.setReceiverId(userId);
+            existingPendingTopup.setAmount(amount);
+            existingPendingTopup.setStatus(Transaction.TxnStatus.SUCCESS);
+            existingPendingTopup.setDescription("Wallet top-up");
+            txnRepo.save(existingPendingTopup);
+        } else {
+            txnRepo.save(Transaction.builder()
+                    .receiverId(userId).amount(amount)
+                    .status(Transaction.TxnStatus.SUCCESS).type(Transaction.TxnType.TOPUP)
+                    .referenceId(ref).idempotencyKey(idempotencyKey).description("Wallet top-up").build());
+        }
 
         // Publish Kafka event for Saga — reward-service consumes TOPUP_SUCCESS to earn
         // points

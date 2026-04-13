@@ -101,11 +101,39 @@ class WalletServiceTest {
 
     @Test
     void topupIgnoresDuplicateIdempotencyKey() {
-        when(txnRepo.findByIdempotencyKey("idem")).thenReturn(Optional.of(Transaction.builder().id(1L).build()));
+        when(txnRepo.findByIdempotencyKey("idem")).thenReturn(Optional.of(
+                Transaction.builder().id(1L).status(Transaction.TxnStatus.SUCCESS).build()));
 
         walletCommandService.topup(1L, new BigDecimal("100"), "idem");
 
         verify(ledgerService, never()).record(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    void topupFinalizesPendingTransactionWhenOrderWasCreatedEarlier() {
+        WalletAccount account = activeWallet(1L, "100.00");
+        Transaction pending = Transaction.builder()
+                .id(1L)
+                .receiverId(1L)
+                .amount(new BigDecimal("50.00"))
+                .status(Transaction.TxnStatus.PENDING)
+                .type(Transaction.TxnType.TOPUP)
+                .referenceId("order_123")
+                .idempotencyKey("order_123")
+                .description("Wallet top-up initiated")
+                .build();
+        when(accountRepo.findByUserId(1L)).thenReturn(Optional.of(account));
+        when(txnRepo.findByIdempotencyKey("order_123")).thenReturn(Optional.of(pending));
+        when(txnRepo.sumTodayTopups(eq(1L), eq(Transaction.TxnType.TOPUP), eq(Transaction.TxnStatus.SUCCESS), any(), any()))
+                .thenReturn(BigDecimal.ZERO);
+
+        walletCommandService.topup(1L, new BigDecimal("50.00"), "order_123");
+
+        assertEquals(new BigDecimal("150.00"), account.getBalance());
+        assertEquals(Transaction.TxnStatus.SUCCESS, pending.getStatus());
+        assertEquals("Wallet top-up", pending.getDescription());
+        verify(ledgerService).record(eq(1L), eq(new BigDecimal("50.00")), eq(LedgerEntry.EntryType.CREDIT), eq("order_123"), eq("Wallet top-up"));
+        verify(txnRepo).save(pending);
     }
 
     @Test

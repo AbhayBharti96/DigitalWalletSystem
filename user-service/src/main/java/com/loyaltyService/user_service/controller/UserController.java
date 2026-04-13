@@ -1,6 +1,7 @@
 package com.loyaltyService.user_service.controller;
 
 import com.loyaltyService.user_service.dto.ApiResponse;
+import com.loyaltyService.user_service.dto.TransferRecipientResponse;
 import com.loyaltyService.user_service.dto.UpdateUserRequest;
 import com.loyaltyService.user_service.dto.UserProfileResponse;
 import com.loyaltyService.user_service.entity.User;
@@ -12,6 +13,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -43,6 +46,18 @@ public class UserController {
             @RequestHeader("X-User-Id") Long userId,
             @Valid @RequestBody UpdateUserRequest req) {
         return ResponseEntity.ok(ApiResponse.ok("Profile updated", userCommandService.updateProfile(userId, req)));
+    }
+
+    @GetMapping("/search/recipients")
+    @Operation(summary = "Search transfer recipients by name or user ID")
+    public ResponseEntity<ApiResponse<List<TransferRecipientResponse>>> searchRecipients(
+            @RequestHeader("X-User-Id") Long userId,
+            @RequestParam("q") String query,
+            @RequestParam(defaultValue = "10") int limit) {
+        return ResponseEntity.ok(ApiResponse.ok(
+                "Recipients fetched",
+                userQueryService.searchTransferRecipients(userId, query, limit)
+        ));
     }
 
     @PostMapping("/internal/create")

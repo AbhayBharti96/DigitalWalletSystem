@@ -1,10 +1,12 @@
 package com.loyaltyService.user_service.service.impl;
 
+import com.loyaltyService.user_service.client.AuthServiceClient;
 import com.loyaltyService.user_service.client.WalletServiceClient;
 import com.loyaltyService.user_service.dto.KycStatusResponse;
 import com.loyaltyService.user_service.entity.AuditLog;
 import com.loyaltyService.user_service.entity.KycDetail;
 import com.loyaltyService.user_service.entity.User;
+import com.loyaltyService.user_service.exception.BadRequestException;
 import com.loyaltyService.user_service.exception.DuplicateKycException;
 import com.loyaltyService.user_service.exception.ResourceNotFoundException;
 import com.loyaltyService.user_service.mapper.KycMapper;
@@ -37,6 +39,7 @@ public class KycServiceImpl implements KycService {
     private final UserRepository      userRepo;
     private final KycRepository       kycRepo;
     private final AuditLogRepository  auditRepo;
+    private final AuthServiceClient authServiceClient;
     private final WalletServiceClient walletServiceClient;
     private final KafkaProducerService kafkaProducer;
     private final KycMapper kycMapper;
@@ -87,7 +90,10 @@ public class KycServiceImpl implements KycService {
                     .status(KycDetail.KycStatus.PENDING)
                     .build();
 
-            KycDetail saved = kycRepo.save(kyc);
+        KycDetail saved = kycRepo.save(kyc);
+        authServiceClient.updateKycStatus(
+                new AuthServiceClient.KycStatusUpdateRequest(userId, KycDetail.KycStatus.PENDING.name())
+        );
 
             auditRepo.save(AuditLog.builder()
                     .userId(userId).action("KYC_SUBMITTED")
@@ -193,6 +199,9 @@ public class KycServiceImpl implements KycService {
         KycDetail saved = kycRepo.save(kyc);
 
         Long userId = kyc.getUser().getId();
+        authServiceClient.updateKycStatus(
+                new AuthServiceClient.KycStatusUpdateRequest(userId, KycDetail.KycStatus.APPROVED.name())
+        );
 
         auditRepo.save(AuditLog.builder()
                 .userId(userId).action("KYC_APPROVED")
@@ -213,6 +222,7 @@ public class KycServiceImpl implements KycService {
             log.info("Wallet created for userId={} after KYC approval", userId);
         } catch (Exception e) {
             log.error("Failed to create wallet for userId={}", userId, e);
+            throw new BadRequestException("Service not available");
         }
 
         log.info("KYC approved: kycId={}, userId={}, by={}", kyc.getId(), userId, adminEmail);
@@ -226,6 +236,9 @@ public class KycServiceImpl implements KycService {
         kyc.setRejectionReason(reason);
         kyc.setReviewedBy(adminEmail);
         KycDetail saved = kycRepo.save(kyc);
+        authServiceClient.updateKycStatus(
+                new AuthServiceClient.KycStatusUpdateRequest(kyc.getUser().getId(), KycDetail.KycStatus.REJECTED.name())
+        );
 
         auditRepo.save(AuditLog.builder()
                 .userId(kyc.getUser().getId()).action("KYC_REJECTED")

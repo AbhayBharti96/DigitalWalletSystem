@@ -83,6 +83,27 @@ class WalletCommandServiceImplTest {
     }
 
     @Test
+    void testTopup_UpdatesPendingTransactionToSuccess() {
+        Transaction pending = Transaction.builder()
+                .referenceId("ORD123")
+                .idempotencyKey("ORD123")
+                .amount(new BigDecimal("500"))
+                .type(Transaction.TxnType.TOPUP)
+                .status(Transaction.TxnStatus.PENDING)
+                .build();
+        when(accountRepo.findByUserId(100L)).thenReturn(Optional.of(testWallet));
+        when(txnRepo.findByIdempotencyKey("ORD123")).thenReturn(Optional.of(pending));
+        when(txnRepo.sumTodayTopups(eq(100L), eq(Transaction.TxnType.TOPUP), eq(Transaction.TxnStatus.SUCCESS), any(), any()))
+                .thenReturn(BigDecimal.ZERO);
+
+        walletCommandService.topup(100L, new BigDecimal("500"), "ORD123");
+
+        assertEquals(Transaction.TxnStatus.SUCCESS, pending.getStatus());
+        assertEquals("Wallet top-up", pending.getDescription());
+        verify(txnRepo).save(pending);
+    }
+
+    @Test
     void testWithdraw_InsufficientBalance() {
         when(accountRepo.findByUserId(100L)).thenReturn(Optional.of(testWallet));
 

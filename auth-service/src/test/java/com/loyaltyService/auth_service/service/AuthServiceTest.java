@@ -341,6 +341,28 @@ class AuthServiceTest {
         verify(refreshTokenService).revokeRefreshToken("old-token");
     }
 
+    @Test
+    void updateRoleUpdatesStoredRole() {
+        User user = user(8L, "role@example.com", "9999999998");
+        when(userRepository.findById(8L)).thenReturn(Optional.of(user));
+
+        authService.updateRole(8L, "ADMIN");
+
+        assertEquals(User.Role.ADMIN, user.getRole());
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    void updateKycStatusUpdatesStoredKycStatus() {
+        User user = user(9L, "kyc@example.com", "9999999997");
+        when(userRepository.findById(9L)).thenReturn(Optional.of(user));
+
+        authService.updateKycStatus(9L, "APPROVED");
+
+        assertEquals(User.KycStatus.APPROVED, user.getKycStatus());
+        verify(userRepository).save(user);
+    }
+
     private User user(Long id, String email, String phone) {
         return User.builder()
                 .id(id)

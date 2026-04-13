@@ -2,8 +2,11 @@ package com.loyaltyService.wallet_service.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import lombok.*;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
@@ -15,12 +18,15 @@ import java.math.BigDecimal;
 @Setter
 public class Payment {
 
+    public static final String STATUS_PENDING = "PENDING";
+    public static final String STATUS_SUCCESS = "SUCCESS";
+    public static final String STATUS_FAILED = "FAILED";
+
     @Id
-    private String orderId; // keep as is
+    private String orderId;
 
-    private String paymentId; // ✅ ADD THIS
-
+    private String paymentId;
     private Long userId;
     private BigDecimal amount;
-    private String status; // CREATED, SUCCESS, FAILED
+    private String status;
 }
